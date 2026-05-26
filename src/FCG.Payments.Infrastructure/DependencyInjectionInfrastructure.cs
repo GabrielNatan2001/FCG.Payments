@@ -1,8 +1,8 @@
+﻿using FCG.Payments.Application.Messaging;
 using FCG.Payments.Domain.Pagamentos.Interfaces;
 using FCG.Payments.Infrastructure.Data;
 using FCG.Payments.Infrastructure.Data.Repositories;
 using FCG.Payments.Infrastructure.Messaging;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,18 +17,11 @@ public static class DependencyInjectionInfrastructure
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IPagamentoRepository, PagamentoRepository>();
-        services.AddSingleton<ConsumeFaultObserver>();
 
-        services.AddMassTransit(x =>
-        {
-            x.AddConsumeObserver<ConsumeFaultObserver>();
+        services.Configure<PaymentProcessedPublisherConfig>(
+            configuration.GetSection("Publishers:PaymentProcessed"));
 
-            x.UsingRabbitMq((context, cfg) =>
-            {
-                RabbitMqBusConfiguration.ConfigureHost(cfg, configuration);
-                RabbitMqBusConfiguration.ConfigureConsumerAndPublish(cfg, context, configuration);
-            });
-        });
+        services.AddSingleton<IMessageBus, MessageBus>();
 
         return services;
     }

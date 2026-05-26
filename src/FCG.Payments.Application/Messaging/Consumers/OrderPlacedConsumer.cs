@@ -1,11 +1,10 @@
-using FCG.Payments.Application.Messaging.Events;
+﻿using FCG.Payments.Application.Messaging.Events;
 using FCG.Payments.Application.Pagamentos.Services;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace FCG.Payments.Application.Messaging.Consumers;
 
-public class OrderPlacedConsumer : IConsumer<OrderPlacedEvent>
+public class OrderPlacedConsumer : IOrderPlacedMessage
 {
     private readonly ProcessarPagamentoService _service;
     private readonly ILogger<OrderPlacedConsumer> _logger;
@@ -18,14 +17,14 @@ public class OrderPlacedConsumer : IConsumer<OrderPlacedEvent>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<OrderPlacedEvent> context)
+    public async Task Consumir(OrderPlacedEvent dados)
     {
         _logger.LogInformation(
             "OrderPlacedEvent recebido | OrderId: {OrderId} | UserId: {UserId} | GameId: {GameId}",
-            context.Message.OrderId,
-            context.Message.UserId,
-            context.Message.GameId);
+            dados.OrderId,
+            dados.UserId,
+            dados.GameId);
 
-        await _service.Execute(context.Message);
+        await _service.Execute(dados);
     }
 }

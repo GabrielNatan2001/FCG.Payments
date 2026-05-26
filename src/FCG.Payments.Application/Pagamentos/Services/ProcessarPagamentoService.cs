@@ -1,25 +1,29 @@
+﻿using FCG.Payments.Application.Messaging;
 using FCG.Payments.Application.Messaging.Events;
 using FCG.Payments.Domain.Common;
 using FCG.Payments.Domain.Pagamentos.Entities;
 using FCG.Payments.Domain.Pagamentos.Interfaces;
-using MassTransit;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace FCG.Payments.Application.Pagamentos.Services;
 
 public class ProcessarPagamentoService
 {
     private readonly IPagamentoRepository _repository;
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IMessageBus _messageBus;
+    private readonly PaymentProcessedPublisherConfig _publisherConfig;
     private readonly ILogger<ProcessarPagamentoService> _logger;
 
     public ProcessarPagamentoService(
         IPagamentoRepository repository,
-        IPublishEndpoint publishEndpoint,
+        IMessageBus messageBus,
+        IOptions<PaymentProcessedPublisherConfig> publisherConfig,
         ILogger<ProcessarPagamentoService> logger)
     {
         _repository = repository;
-        _publishEndpoint = publishEndpoint;
+        _messageBus = messageBus;
+        _publisherConfig = publisherConfig.Value;
         _logger = logger;
     }
 
@@ -32,12 +36,15 @@ public class ProcessarPagamentoService
         await _repository.SalvarAlteracoes();
 
         var processedAt = DateTime.UtcNow;
-        await _publishEndpoint.Publish(new PaymentProcessedEvent(
+        var paymentEvent = new PaymentProcessedEvent(
             order.OrderId,
             order.UserId,
             order.GameId,
             status,
-            processedAt));
+            processedAt);
+
+        _messageBus.Publish(_publisherConfig.Exchange, _publisherConfig.CatalogRoutingKey, paymentEvent);
+        _messageBus.Publish(_publisherConfig.Exchange, _publisherConfig.NotificationsRoutingKey, paymentEvent);
 
         _logger.LogInformation(
             "Pagamento processado | OrderId: {OrderId} | Status: {Status} | Price: {Price}",
