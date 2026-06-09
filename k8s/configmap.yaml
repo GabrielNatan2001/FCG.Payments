@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fcg-payments-worker-config
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  MessageBusConfigs__RetryCount: "5"
+  Publishers__PaymentProcessed__Exchange: fcg.payment.processed
+  Publishers__PaymentProcessed__RoutingKey: catalog.payment-processed
+  Publishers__NotificationsRoutingKey__RoutingKey: notifications.payment-processed
