@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: fcg-payments-worker
+
 spec:
   replicas: 1
 
@@ -9,24 +11,30 @@ spec:
     matchLabels:
       app: fcg-payments-worker
 
+  template:
+    metadata:
+      labels:
+        app: fcg-payments-worker
+
     spec:
       containers:
         - name: fcg-payments-worker
           image: gabrielnatan2001/fcg-worker-payments:latest
+          imagePullPolicy: Always
 
           ports:
-           - containerPort: 8080
+            - containerPort: 8080
 
-           envFrom:
+          envFrom:
             - configMapRef:
                 name: fcg-payments-worker-config
 
             - secretRef:
                 name: fcg-payments-worker-secret
-          
+
           readinessProbe:
             httpGet:
-              path: /health/ready
+              path: /health
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
