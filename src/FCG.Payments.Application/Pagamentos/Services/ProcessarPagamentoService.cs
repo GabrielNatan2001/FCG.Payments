@@ -29,7 +29,7 @@ public class ProcessarPagamentoService
 
     public async Task Execute(OrderPlacedEvent order)
     {
-        var status = order.Price <= 0 ? PaymentStatus.Rejected : PaymentStatus.Approved;
+        var status = order.Price <= 50 ? PaymentStatus.Rejected : PaymentStatus.Approved;
 
         var pagamento = PagamentoEntity.Criar(order.OrderId, order.UserId, order.GameId, order.Price, status);
         await _repository.Adicionar(pagamento);
