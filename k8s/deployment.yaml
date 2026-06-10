@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: fcg-payments-worker
-          image: GabrielNatan2001/fcg-payments-worker:latest
+          image: gabrielnatan2001/fcg-worker-payments:latest
 
           ports:
            - containerPort: 8080
