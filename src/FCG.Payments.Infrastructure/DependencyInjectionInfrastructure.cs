@@ -22,6 +22,7 @@ public static class DependencyInjectionInfrastructure
             configuration.GetSection("Publishers:PaymentProcessed"));
 
         services.AddSingleton<IMessageBus, MessageBus>();
+        services.AddRabbitMqTopologyInitializer(configuration);
 
         return services;
     }
