@@ -6,5 +6,9 @@ data:
   ASPNETCORE_ENVIRONMENT: Production
   MessageBusConfigs__RetryCount: "5"
   Publishers__PaymentProcessed__Exchange: fcg.payment.processed
-  Publishers__PaymentProcessed__RoutingKey: catalog.payment-processed
-  Publishers__NotificationsRoutingKey__RoutingKey: notifications.payment-processed
+  Publishers__PaymentProcessed__CatalogRoutingKey: catalog.payment-processed
+  Publishers__PaymentProcessed__NotificationsRoutingKey: notifications.payment-processed
+  MessageBusConfigs__RetryCount: "5"
+  Workers__OrderPlaced__Ativo: "true"
+  Workers__OrderPlaced__Exchange: fcg.order.placed
+  Workers__OrderPlaced__RoutingKey: payments.order-placed
