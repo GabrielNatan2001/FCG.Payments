@@ -5,4 +5,8 @@
     <Project Path="src/FCG.Payments.Infrastructure/FCG.Payments.Infrastructure.csproj" />
     <Project Path="src/FCG.Payments.Worker/FCG.Payments.Worker.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FCG.Payments.Application.Tests/FCG.Payments.Application.Tests.csproj" />
+    <Project Path="tests/FCG.Payments.Domain.Tests/FCG.Payments.Domain.Tests.csproj" />
+  </Folder>
 </Solution>
