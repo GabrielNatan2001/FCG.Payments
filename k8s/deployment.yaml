@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: fcg-payments-worker
-          image: gabrielnatan2001/fcg-worker-payments:latest
+          image: fcgacrgabrielnatan.azurecr.io/fcg-worker-payments:latest
           imagePullPolicy: Always
 
           ports:
